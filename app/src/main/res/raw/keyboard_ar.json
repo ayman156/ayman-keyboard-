@@ -1,0 +1,55 @@
+{
+  "languageCode": "ar",
+  "languageName": "العربية",
+  "rows": [
+    [
+      {"label": "ض", "type": "CHARACTER"},
+      {"label": "ص", "type": "CHARACTER"},
+      {"label": "ث", "type": "CHARACTER"},
+      {"label": "ق", "type": "CHARACTER"},
+      {"label": "ف", "type": "CHARACTER"},
+      {"label": "غ", "type": "CHARACTER"},
+      {"label": "ع", "type": "CHARACTER"},
+      {"label": "ه", "type": "CHARACTER"},
+      {"label": "خ", "type": "CHARACTER"},
+      {"label": "ح", "type": "CHARACTER"},
+      {"label": "ج", "type": "CHARACTER"},
+      {"label": "د", "type": "CHARACTER"}
+    ],
+    [
+      {"label": "ش", "type": "CHARACTER"},
+      {"label": "س", "type": "CHARACTER"},
+      {"label": "ي", "type": "CHARACTER"},
+      {"label": "ب", "type": "CHARACTER"},
+      {"label": "ل", "type": "CHARACTER"},
+      {"label": "ا", "type": "CHARACTER"},
+      {"label": "ت", "type": "CHARACTER"},
+      {"label": "ن", "type": "CHARACTER"},
+      {"label": "م", "type": "CHARACTER"},
+      {"label": "ك", "type": "CHARACTER"},
+      {"label": "ط", "type": "CHARACTER"}
+    ],
+    [
+      {"label": "ذ", "type": "CHARACTER"},
+      {"label": "ئ", "type": "CHARACTER"},
+      {"label": "ء", "type": "CHARACTER"},
+      {"label": "ؤ", "type": "CHARACTER"},
+      {"label": "ر", "type": "CHARACTER"},
+      {"label": "لا", "type": "CHARACTER"},
+      {"label": "ى", "type": "CHARACTER"},
+      {"label": "ة", "type": "CHARACTER"},
+      {"label": "و", "type": "CHARACTER"},
+      {"label": "ز", "type": "CHARACTER"},
+      {"label": "ظ", "type": "CHARACTER"},
+      {"label": "⌫", "type": "DELETE"}
+    ],
+    [
+      {"label": "🌐", "type": "LANGUAGE_SWITCH"},
+      {"label": "📋", "type": "CLIPBOARD"},
+      {"label": "🎤", "type": "VOICE"},
+      {"label": "space", "type": "SPACE"},
+      {"label": "😊", "type": "EMOJI"},
+      {"label": "↵", "type": "ENTER"}
+    ]
+  ]
+}

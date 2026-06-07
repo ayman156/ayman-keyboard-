@@ -1,0 +1,48 @@
+{
+  "languageCode": "en",
+  "languageName": "English",
+  "rows": [
+    [
+      {"label": "q", "type": "CHARACTER"},
+      {"label": "w", "type": "CHARACTER"},
+      {"label": "e", "type": "CHARACTER"},
+      {"label": "r", "type": "CHARACTER"},
+      {"label": "t", "type": "CHARACTER"},
+      {"label": "y", "type": "CHARACTER"},
+      {"label": "u", "type": "CHARACTER"},
+      {"label": "i", "type": "CHARACTER"},
+      {"label": "o", "type": "CHARACTER"},
+      {"label": "p", "type": "CHARACTER"}
+    ],
+    [
+      {"label": "a", "type": "CHARACTER"},
+      {"label": "s", "type": "CHARACTER"},
+      {"label": "d", "type": "CHARACTER"},
+      {"label": "f", "type": "CHARACTER"},
+      {"label": "g", "type": "CHARACTER"},
+      {"label": "h", "type": "CHARACTER"},
+      {"label": "j", "type": "CHARACTER"},
+      {"label": "k", "type": "CHARACTER"},
+      {"label": "l", "type": "CHARACTER"}
+    ],
+    [
+      {"label": "⇧", "type": "SHIFT"},
+      {"label": "z", "type": "CHARACTER"},
+      {"label": "x", "type": "CHARACTER"},
+      {"label": "c", "type": "CHARACTER"},
+      {"label": "v", "type": "CHARACTER"},
+      {"label": "b", "type": "CHARACTER"},
+      {"label": "n", "type": "CHARACTER"},
+      {"label": "m", "type": "CHARACTER"},
+      {"label": "⌫", "type": "DELETE"}
+    ],
+    [
+      {"label": "🌐", "type": "LANGUAGE_SWITCH"},
+      {"label": "📋", "type": "CLIPBOARD"},
+      {"label": "🎤", "type": "VOICE"},
+      {"label": "space", "type": "SPACE"},
+      {"label": "😊", "type": "EMOJI"},
+      {"label": "↵", "type": "ENTER"}
+    ]
+  ]
+}

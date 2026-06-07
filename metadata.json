@@ -1,0 +1,6 @@
+{
+  "name": "كيبورد عملي",
+  "description": "لوحة مفاتيح عربية وإلكترونية حديثة ومبسطة تدعم الحافظة الذكية مع ميزة ومحاكاة الكتابة البشرية (صق متميز)، والإدخال الصوتي، وتخصيص المظهر بالكامل.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
