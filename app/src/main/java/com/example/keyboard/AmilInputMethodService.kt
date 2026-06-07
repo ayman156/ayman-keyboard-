@@ -48,6 +48,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.*
+import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.lifecycle.setViewTreeViewModelStoreOwner
 import androidx.savedstate.SavedStateRegistry
 import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
@@ -166,6 +168,15 @@ class AmilInputMethodService : InputMethodService(),
 
     override fun onCreateInputView(): View {
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+
+        // Set owners on window decorView so that parent containers can resolve them
+        window?.window?.decorView?.let { decorView ->
+            if (decorView.tag == null) { // prevent overriding if already set
+                decorView.setViewTreeLifecycleOwner(this)
+                decorView.setViewTreeViewModelStoreOwner(this)
+                decorView.setViewTreeSavedStateRegistryOwner(this)
+            }
+        }
 
         val composeView = ComposeView(this)
         composeView.setViewTreeLifecycleOwner(this)
