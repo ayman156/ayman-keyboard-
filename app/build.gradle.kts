@@ -1,18 +1,20 @@
-عدلته هكذا هل هو مناسب:
 import com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy
 
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.google.devtools.ksp)
-  alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.roborazzi)
   alias(libs.plugins.secrets)
-  alias(libs.plugins.google.services)
+  
+  // إضافة الإضافات مباشرة لتجنب مشاكل الـ Version Catalog (toml) في السيرفر
+  id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
+  id("com.google.gms.google-services") version "4.4.2"
 }
 
 android {
-  namespace = "com.example"
+  // تم التعديل ليطابق الـ applicationId الخاص بتطبيق الكيبورد
+  namespace = "ayman.amil.keyboard"
   compileSdk { version = release(36) { minorApiLevel = 1 } }
 
   defaultConfig {
@@ -42,7 +44,6 @@ android {
         keyAlias = "androiddebugkey"
         keyPassword = "android"
       } else {
-        // في السيرفر/الـ CI إذا لم يجد الملف سيتخطى الخطأ المسبب للفشل ويعتمد الإعداد التلقائي
         println("Warning: Custom debug.keystore not found, falling back to default Android debug keys.")
       }
     }
@@ -56,14 +57,14 @@ android {
       signingConfig = signingConfigs.getByName("release")
     }
     debug {
-      // إذا تم تفعيل الكيستور المخصص يتم ربطه، وإلا سيعتمد أندرويد تلقائياً على التوقيع الافتراضي للديباج
+      // إذا كان الملف المخصص موجوداً يتم استخدامه، وإلا يعتمد أندرويد تلقائياً على التوقيع الافتراضي
       if (file("${rootDir}/debug.keystore").exists()) {
         signingConfig = signingConfigs.getByName("debugConfig")
       }
     }
   }
   compileOptions {
-    // تم التحديث إلى جافا 17 ليتوافق مع الإصدارات الحديثة من Gradle و Android SDK
+    // تم التحديث إلى جافا 17 ليتوافق مع Gradle 9.6.0 على السيرفر
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
@@ -82,10 +83,9 @@ secrets {
 }
 
 googleServices {
-  // يمنع توقف البلد بالكامل في حال عدم وجود ملف google-services.json ويكتفي بإظهار تحذير
+  // يمنع توقف الـ Build في السيرفر في حال عدم وجود ملف google-services.json الحقيقي ويكتفي بتحذير
   missingGoogleServicesStrategy = MissingGoogleServicesStrategy.WARN
 }
-
 
 // Some unused dependencies are commented out below instead of being removed.
 // This makes it easy to add them back in the future if needed.
@@ -109,16 +109,14 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime.compose)
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.androidx.lifecycle.viewmodel.compose)
-  implementation(libs.androidx.navigation.compose)
+  // implementation(libs.androidx.navigation.compose)
   implementation(libs.androidx.room.ktx)
   implementation(libs.androidx.room.runtime)
   // implementation(libs.coil.compose)
   implementation(libs.converter.moshi)
-  implementation(libs.firebase.ai)
-  implementation(libs.firebase.appcheck.recaptcha)
+  // implementation(libs.firebase.ai)
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.kotlinx.coroutines.core)
-  implementation(libs.kotlinx.serialization.json)
   implementation(libs.logging.interceptor)
   implementation(libs.moshi.kotlin)
   implementation(libs.okhttp)
