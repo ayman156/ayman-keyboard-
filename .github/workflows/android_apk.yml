@@ -22,11 +22,61 @@ jobs:
         distribution: 'temurin'
         cache: 'gradle'
 
+    # إنشاء debug.keystore لتجنب خطأ "Keystore file not found"
+    - name: Generate debug keystore
+      run: |
+        keytool -genkey -v \
+          -keystore debug.keystore \
+          -alias androiddebugkey \
+          -keyalg RSA \
+          -keysize 2048 \
+          -validity 10000 \
+          -storepass android \
+          -keypass android \
+          -dname "CN=Android Debug, OU=Android, O=Unknown, L=Unknown, ST=Unknown, C=US"
+
     - name: Generate Gradle Wrapper (if missing)
       run: gradle wrapper
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
+    # إنشاء ملف google-services.json وهمي إذا لم يكن موجوداً
+    - name: Create dummy google-services.json (if missing)
+      run: |
+        if [ ! -f app/google-services.json ]; then
+          echo '{
+            "project_info": {
+              "project_number": "000000000000",
+              "firebase_url": "https://dummy-project.firebaseio.com",
+              "project_id": "dummy-project",
+              "storage_bucket": "dummy-project.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:000000000000:android:0000000000000000",
+                  "android_client_info": {
+                    "package_name": "ayman.amil.keyboard"
+                  }
+                },
+                "oauth_client": [],
+                "api_key": [
+                  {
+                    "current_key": "AIzaSyDummyKeyForBuildPurposes"
+                  }
+                ],
+                "services": {
+                  "appinvite_service": {
+                    "other_platform_oauth_client": []
+                  }
+                }
+              }
+            ],
+            "configuration_version": "1"
+          }' > app/google-services.json
+          echo "Created dummy google-services.json for build purposes"
+        fi
 
     - name: Build Debug APK
       run: ./gradlew assembleDebug
