@@ -1,9 +1,13 @@
+import com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.google.devtools.ksp)
+  alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.roborazzi)
   alias(libs.plugins.secrets)
+  alias(libs.plugins.google.services)
 }
 
 android {
@@ -24,9 +28,9 @@ android {
     create("release") {
       val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
       storeFile = file(keystorePath)
-      storePassword = System.getenv("STORE_PASSWORD")
-      keyAlias = "upload"
-      keyPassword = System.getenv("KEY_PASSWORD")
+      storePassword = System.getenv("STORE_PASSWORD") ?: "dummy_password_for_build"
+      keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
+      keyPassword = System.getenv("KEY_PASSWORD") ?: "dummy_password_for_build"
     }
     create("debugConfig") {
       storeFile = file("${rootDir}/debug.keystore")
@@ -41,15 +45,22 @@ android {
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      signingConfig = signingConfigs.getByName("release")
+      // تفعيل توقيع release فقط إذا كانت المتغيرات موجودة (في بيئة CI/CD)
+      val storePassword = System.getenv("STORE_PASSWORD")
+      val keyPassword = System.getenv("KEY_PASSWORD")
+      if (!storePassword.isNullOrEmpty() && !keyPassword.isNullOrEmpty()) {
+        signingConfig = signingConfigs.getByName("release")
+      } else {
+        println("Warning: Release signing config skipped - environment variables missing. Using default debug signing.")
+      }
     }
     debug {
       signingConfig = signingConfigs.getByName("debugConfig")
     }
   }
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
   }
   buildFeatures {
     compose = true
@@ -63,6 +74,11 @@ android {
 secrets {
   propertiesFileName = ".env"
   defaultPropertiesFileName = ".env.example"
+}
+
+googleServices {
+  // يمنع توقف البناء بالكامل في حال عدم وجود ملف google-services.json
+  missingGoogleServicesStrategy = MissingGoogleServicesStrategy.WARN
 }
 
 // Some unused dependencies are commented out below instead of being removed.
@@ -87,14 +103,16 @@ dependencies {
   implementation(libs.androidx.lifecycle.runtime.compose)
   implementation(libs.androidx.lifecycle.runtime.ktx)
   implementation(libs.androidx.lifecycle.viewmodel.compose)
-  // implementation(libs.androidx.navigation.compose)
+  implementation(libs.androidx.navigation.compose)
   implementation(libs.androidx.room.ktx)
   implementation(libs.androidx.room.runtime)
   // implementation(libs.coil.compose)
   implementation(libs.converter.moshi)
-  // implementation(libs.firebase.ai)
+  implementation(libs.firebase.ai)
+  implementation(libs.firebase.appcheck.recaptcha)
   implementation(libs.kotlinx.coroutines.android)
   implementation(libs.kotlinx.coroutines.core)
+  implementation(libs.kotlinx.serialization.json)
   implementation(libs.logging.interceptor)
   implementation(libs.moshi.kotlin)
   implementation(libs.okhttp)
