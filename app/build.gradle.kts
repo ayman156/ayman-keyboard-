@@ -1,3 +1,4 @@
+عدلته هكذا هل هو مناسب:
 import com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy
 
 plugins {
@@ -28,15 +29,22 @@ android {
     create("release") {
       val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
       storeFile = file(keystorePath)
-      storePassword = System.getenv("STORE_PASSWORD") ?: "dummy_password_for_build"
-      keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
-      keyPassword = System.getenv("KEY_PASSWORD") ?: "dummy_password_for_build"
+      storePassword = System.getenv("STORE_PASSWORD")
+      keyAlias = "upload"
+      keyPassword = System.getenv("KEY_PASSWORD")
     }
     create("debugConfig") {
-      storeFile = file("${rootDir}/debug.keystore")
-      storePassword = "android"
-      keyAlias = "androiddebugkey"
-      keyPassword = "android"
+      val customDebugKeystore = file("${rootDir}/debug.keystore")
+      // التحقق مما إذا كان ملف الكيستور المخصص موجوداً، وإذا لم يوجد نستخدم الافتراضي
+      if (customDebugKeystore.exists()) {
+        storeFile = customDebugKeystore
+        storePassword = "android"
+        keyAlias = "androiddebugkey"
+        keyPassword = "android"
+      } else {
+        // في السيرفر/الـ CI إذا لم يجد الملف سيتخطى الخطأ المسبب للفشل ويعتمد الإعداد التلقائي
+        println("Warning: Custom debug.keystore not found, falling back to default Android debug keys.")
+      }
     }
   }
 
@@ -45,20 +53,17 @@ android {
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      // تفعيل توقيع release فقط إذا كانت المتغيرات موجودة (في بيئة CI/CD)
-      val storePassword = System.getenv("STORE_PASSWORD")
-      val keyPassword = System.getenv("KEY_PASSWORD")
-      if (!storePassword.isNullOrEmpty() && !keyPassword.isNullOrEmpty()) {
-        signingConfig = signingConfigs.getByName("release")
-      } else {
-        println("Warning: Release signing config skipped - environment variables missing. Using default debug signing.")
-      }
+      signingConfig = signingConfigs.getByName("release")
     }
     debug {
-      signingConfig = signingConfigs.getByName("debugConfig")
+      // إذا تم تفعيل الكيستور المخصص يتم ربطه، وإلا سيعتمد أندرويد تلقائياً على التوقيع الافتراضي للديباج
+      if (file("${rootDir}/debug.keystore").exists()) {
+        signingConfig = signingConfigs.getByName("debugConfig")
+      }
     }
   }
   compileOptions {
+    // تم التحديث إلى جافا 17 ليتوافق مع الإصدارات الحديثة من Gradle و Android SDK
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
   }
@@ -77,9 +82,10 @@ secrets {
 }
 
 googleServices {
-  // يمنع توقف البناء بالكامل في حال عدم وجود ملف google-services.json
+  // يمنع توقف البلد بالكامل في حال عدم وجود ملف google-services.json ويكتفي بإظهار تحذير
   missingGoogleServicesStrategy = MissingGoogleServicesStrategy.WARN
 }
+
 
 // Some unused dependencies are commented out below instead of being removed.
 // This makes it easy to add them back in the future if needed.
